@@ -10,59 +10,8 @@
 			overflow: hidden;
 		}
 	</style>
-	<script src="js/p5.min.js"></script>
-	<script type="text/javascript">
-		function setup(){
-			var w = 560,//window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
-				h = 560;//window.innerHeight || document.documentElement.clientHeight	|| document.body.clientHeight;
-
-			createCanvas(w,h);
-			pixelDensity(1);
-
-			loadPixels();
-			for(var x=0;x<w;x++){
-				for(var y=0;y<h;y++){
-
-					var a=map(x,0,w,-2,2);
-					var b=map(y,0,h,-2,2);
-					var ca=a;
-					var cb=b;
-					var n=0;
-
-					while(n<100){
-						var aa=a*a-b*b;
-						var bb=2*a*b;
-
-						a=aa+ca;
-						b=bb+cb;
-
-						if(abs(a+b)>16){
-							break;
-						}
-
-						n++;
-
-					}
-
-					var bright=map(n,0,100,0,255);
-
-					// if(n===100){
-					// 	bright=255;
-					// }
-
-
-					var pix=(x+y*width) * 4;
-					pixels[pix+0]=bright;
-					pixels[pix+1]=bright;
-					pixels[pix+2]=bright;
-					pixels[pix+3]=255;
-
-				}
-			}
-
-			updatePixels();
-		}
-	</script>
+	<canvas id="canvas">Your browser doesn't support canvas?</canvas>
+	<script src="js/mandelbrot.js"></script>
 </head>
 <body>
 </body>
