@@ -28,11 +28,27 @@ var Mouse=function(canvas){
     }
     this._onClickUp=function(e){
     	this._isDown=false;
+    	this._callEvt('mouseup',this._getMousePos(e));
     }
     this._onCancel=function(e){
     	this._isDown=false;
     }
+    this._onZoom=function(event){
+    	 var delta = 0;
+        if (!event) event = window.event;
+        if (event.wheelDelta) { /* IE/Opera. */
+            delta = event.wheelDelta/120;
+        } else if (event.detail) { /** Mozilla case. */
+            delta = -event.detail/3;
+        }
+        if (delta)
+                this._callEvt('zoom',delta);
 
+
+        if (event.preventDefault)
+                event.preventDefault();
+		event.returnValue = false;
+    }
     this._callEvt=function(key,e){
     	if(this._evt && this._evt[key]){
     		this._evt[key].forEach(function(elem,idx){
@@ -68,6 +84,8 @@ var Mouse=function(canvas){
     canvas.addEventListener("mouseup", this._onClickUp.bind(this), false);
     canvas.addEventListener("touchend", this._onClickUp.bind(this), false);
     canvas.addEventListener("touchcancel", this._onCancel.bind(this), false);
+    //zoom
+    canvas.addEventListener("wheel", this._onZoom.bind(this), false);
 }
 
 var Mandelbrot=function(canvas){
@@ -81,6 +99,7 @@ var Mandelbrot=function(canvas){
 	this.size = canvas.width;
 	this.ctx= canvas.getContext('2d');;
 	this.image =this.ctx.createImageData(this.size,this.size);
+	this.imageOffset=[0,0];
 	/* If you write any private function like this:
 			var draw=function(){}
 		then it will have a global scope of window. i.e. this will reffer to window
@@ -92,7 +111,7 @@ var Mandelbrot=function(canvas){
 	}
 
 	this.draw=function(){
-
+		// console.log(this.view)
 		for(var x=0;x<this.size;x++){
 			for(var y=0;y<this.size;y++){
 
@@ -121,6 +140,7 @@ var Mandelbrot=function(canvas){
 			}
 		}
 		this.ctx.putImageData(this.image, 0, 0);
+		this.imageOffset=[0,0];
 	}
 	this.map=function(x, a, b, c, d) {
 	    return  (x-a)/(b-a) * (d-c) + c;
@@ -134,13 +154,46 @@ var Mandelbrot=function(canvas){
 		this.view[1]+=px;
 		this.view[2]+=py;
 		this.view[3]+=py;
+		this.imageOffset[0]-=delta.x;
+		this.imageOffset[1]-=delta.y;
+		//proxy
+		this.ctx.putImageData(this.image, this.imageOffset[0],this.imageOffset[1]);
+		
+	}
+	this.onZoom=function(delta){
+		var dx=(Math.abs(this.view[0])+Math.abs(this.view[1]))/10*delta,
+			dy=(Math.abs(this.view[2])+Math.abs(this.view[3]))/10*delta;
+		
+		if(this.view[0]>0)
+			this.view[0]-=dx;
+		else
+			this.view[0]+=dx;
+
+		if(this.view[1]>0)
+			this.view[1]-=dx;
+		else
+			this.view[1]+=dx;
+
+		if(this.view[2]>0)
+			this.view[2]-=dy;
+		else
+			this.view[2]+=dy;
+
+		if(this.view[3]>0)
+			this.view[3]-=dy;
+		else
+			this.view[3]+=dy;
 		this.draw();
 	}
-
+	this.mouseup=function(pos){
+		this.draw();
+	}
 	this.mouse=new Mouse(canvas);
 
 	this.setup();
 	//set drag event.
 	this.mouse.on('drag',this.onDrag.bind(this));
+	this.mouse.on('zoom',this.onZoom.bind(this));
+	this.mouse.on('mouseup',this.mouseup.bind(this));
 	
 }
