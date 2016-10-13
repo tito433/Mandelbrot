@@ -8,10 +8,28 @@
 			padding:0;
 			margin: 0;
 			overflow: hidden;
+			text-align: center;
 		}
+
 	</style>
-	<canvas id="canvas">Your browser doesn't support canvas?</canvas>
+	<canvas id="canvas" width="1024" height="1024">Your browser doesn't support canvas?</canvas>
 	<script src="js/mandelbrot.js"></script>
+	<script type="text/javascript">
+		window.onload=function(){
+			var w = window,
+			    d = document,
+			    e = d.documentElement,
+			    g = d.getElementsByTagName('body')[0],
+			    x = w.innerWidth || e.clientWidth || g.clientWidth,
+			    y = w.innerHeight|| e.clientHeight|| g.clientHeight,
+			    canvas=document.getElementById('canvas'),
+			    size=Math.min(y,x);
+			canvas.width=size;
+			canvas.height=size;
+
+			new Mandelbrot(canvas);
+		}
+	</script>
 </head>
 <body>
 </body>
