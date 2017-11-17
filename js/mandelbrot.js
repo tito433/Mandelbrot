@@ -44,9 +44,6 @@ var Mouse=function(canvas){
         if (delta)
                 this._callEvt('zoom',delta);
 
-
-        if (event.preventDefault)
-                event.preventDefault();
 		event.returnValue = false;
     }
     this._callEvt=function(key,e){
@@ -92,9 +89,7 @@ var Mandelbrot=function(canvas){
 	if (!(this instanceof Mandelbrot)){
          return new Mandelbrot(canvas);
      }
-    if(undefined === canvas){
-    	throw "Undefined canvas!!!! Nothing to show...";
-    }
+    if(undefined === canvas){throw "Undefined canvas!!!! Nothing to show...";}
 
 	this.size = canvas.width;
 	this.ctx= canvas.getContext('2d');;
@@ -122,8 +117,7 @@ var Mandelbrot=function(canvas){
 				var bright=255;
 
 				while(bright>0){
-					var aa=a*a-b*b,
-						bb=2*a*b;
+					var aa=a*a-b*b,bb=2*a*b;
 					a=aa+ca;
 					b=bb+cb;
 
@@ -161,9 +155,8 @@ var Mandelbrot=function(canvas){
 		
 	}
 	this.onZoom=function(delta){
-		var dx=(Math.abs(this.view[0])+Math.abs(this.view[1]))/10*delta,
-			dy=(Math.abs(this.view[2])+Math.abs(this.view[3]))/10*delta;
-		
+		var dx=(Math.abs(this.view[0])+Math.abs(this.view[1]))/10;
+
 		if(this.view[0]>0)
 			this.view[0]-=dx;
 		else
@@ -175,14 +168,14 @@ var Mandelbrot=function(canvas){
 			this.view[1]+=dx;
 
 		if(this.view[2]>0)
-			this.view[2]-=dy;
+			this.view[2]-=dx;
 		else
-			this.view[2]+=dy;
+			this.view[2]+=dx;
 
 		if(this.view[3]>0)
-			this.view[3]-=dy;
+			this.view[3]-=dx;
 		else
-			this.view[3]+=dy;
+			this.view[3]+=dx;
 		this.draw();
 	}
 	this.mouseup=function(pos){

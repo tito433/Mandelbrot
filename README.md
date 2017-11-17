@@ -1,3 +1,3 @@
 # Mandelbrot Set
 
-### Demo: [https://titosust.github.io/Mandelbrot/](https://titosust.github.io/Mandelbrot/)
+### Demo: [https://tito433.github.io/Mandelbrot/](https://tito433.github.io/Mandelbrot/)
